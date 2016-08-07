@@ -1,8 +1,14 @@
 package teammates.common.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.joda.time.DateTimeZone;
 
 import teammates.common.datatransfer.FeedbackParticipantType;
 
@@ -63,6 +69,7 @@ public final class Const {
     
     public static final String DEFAULT_SECTION = "None";
     
+    public static final String DEFAULT_TIMEZONE = DateTimeZone.UTC.getID();
     
     /* 
      * These constants are used as variable values to mean that the variable
@@ -423,6 +430,36 @@ public final class Const {
     }
     
     public static class FeedbackQuestion {
+
+        public static final Map<FeedbackParticipantType, List<FeedbackParticipantType>>
+                COMMON_FEEDBACK_PATHS;
+
+        static {
+            Map<FeedbackParticipantType, List<FeedbackParticipantType>> initializer =
+                    new LinkedHashMap<FeedbackParticipantType, List<FeedbackParticipantType>>();
+
+            initializer.put(FeedbackParticipantType.SELF,
+                            new ArrayList<FeedbackParticipantType>(
+                                    Arrays.asList(FeedbackParticipantType.NONE,
+                                                  FeedbackParticipantType.SELF,
+                                                  FeedbackParticipantType.INSTRUCTORS)));
+
+            initializer.put(FeedbackParticipantType.STUDENTS,
+                            new ArrayList<FeedbackParticipantType>(
+                                    Arrays.asList(FeedbackParticipantType.NONE,
+                                                  FeedbackParticipantType.SELF,
+                                                  FeedbackParticipantType.INSTRUCTORS,
+                                                  FeedbackParticipantType.OWN_TEAM_MEMBERS,
+                                                  FeedbackParticipantType.OWN_TEAM_MEMBERS_INCLUDING_SELF)));
+
+            initializer.put(FeedbackParticipantType.INSTRUCTORS,
+                            new ArrayList<FeedbackParticipantType>(
+                                    Arrays.asList(FeedbackParticipantType.NONE,
+                                                  FeedbackParticipantType.SELF,
+                                                  FeedbackParticipantType.INSTRUCTORS)));
+
+            COMMON_FEEDBACK_PATHS = Collections.unmodifiableMap(initializer);
+        }
     
         // Mcq
         public static final int MCQ_MIN_NUM_OF_CHOICES = 2;
@@ -539,6 +576,7 @@ public final class Const {
         public static final String COURSE_ID = "courseid";
         public static final String COURSE_NAME = "coursename";
         public static final String COURSE_INDEX = "courseidx";
+        public static final String COURSE_TIME_ZONE = "coursetimezone";
         public static final String COURSE_EDIT_MAIN_INDEX = "courseeditmainindex";
         public static final String INSTRUCTOR_SHORT_NAME = "instructorshortname";
         public static final String INSTRUCTOR_ID = "instructorid";
@@ -1384,6 +1422,14 @@ public final class Const {
         
         // POST parameter null message
         public static final String NULL_POST_PARAMETER = "The %s POST parameter is null\n";
+    }
+
+    public class PlaceholderText {
+        public static final String FEEDBACK_QUESTION = "A concise version of the question e.g. "
+                + "&quot;How well did the team member communicate?&quot;";
+        public static final String FEEDBACK_QUESTION_DESCRIPTION = "More details about the question e.g. &quot;In answering "
+                + "the question, do consider communications made informally within the team, and formal communications with "
+                + "the instructors and tutors.&quot;";
     }
 
 }

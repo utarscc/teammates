@@ -22,7 +22,6 @@ import teammates.common.datatransfer.InstructorAttributes;
 import teammates.common.datatransfer.InstructorPrivileges;
 import teammates.common.datatransfer.StudentAttributes;
 import teammates.common.datatransfer.StudentProfileAttributes;
-import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Assumption;
@@ -32,9 +31,9 @@ import teammates.common.util.ThreadHelper;
 import teammates.common.util.Utils;
 import teammates.logic.api.Logic;
 import teammates.storage.api.AccountsDb;
+import teammates.storage.api.BothQuestionsDb;
 import teammates.storage.api.CommentsDb;
 import teammates.storage.api.CoursesDb;
-import teammates.storage.api.FeedbackQuestionsDb;
 import teammates.storage.api.FeedbackResponseCommentsDb;
 import teammates.storage.api.FeedbackResponsesDb;
 import teammates.storage.api.FeedbackSessionsDb;
@@ -51,7 +50,7 @@ public class BackDoorLogic extends Logic {
     private static final StudentsDb studentsDb = new StudentsDb();
     private static final InstructorsDb instructorsDb = new InstructorsDb();
     private static final FeedbackSessionsDb fbDb = new FeedbackSessionsDb();
-    private static final FeedbackQuestionsDb fqDb = new FeedbackQuestionsDb();
+    private static final BothQuestionsDb fqDb = new BothQuestionsDb();
     private static final FeedbackResponsesDb frDb = new FeedbackResponsesDb();
     private static final FeedbackResponseCommentsDb fcDb = new FeedbackResponseCommentsDb();
     
@@ -445,22 +444,6 @@ public class BackDoorLogic extends Logic {
                 + "%" + responseIdParam[1] + "%" + responseIdParam[2];
         
         return responseComment;
-    }
-    
-
-    /**
-     * Creates a COURSE without an INSTRUCTOR relation
-     * Used in persisting DataBundles for Test cases
-     */
-    public void createCourseWithArchiveStatus(CourseAttributes course)
-            throws EntityAlreadyExistsException, InvalidParametersException, EntityDoesNotExistException {
-        Assumption.assertNotNull(ERROR_NULL_PARAMETER, course);
-        try {
-            coursesLogic.setArchiveStatusOfCourse(course.getId(), course.isArchived);
-        } catch (EntityDoesNotExistException e) {
-            coursesLogic.createCourse(course.getId(), course.getName());
-            coursesLogic.setArchiveStatusOfCourse(course.getId(), course.isArchived);
-        }
     }
 
     public void deleteExistingData(DataBundle dataBundle) {
